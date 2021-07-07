@@ -1,6 +1,6 @@
 # Chillitray_assessment
 
-## Used the below credentials the view the app
+## Used the below credentials to view the app
 
 username - agodly10
 

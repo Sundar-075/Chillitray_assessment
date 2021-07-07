@@ -1,0 +1,9 @@
+.login-page {
+  width: 750px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+body {
+  padding-top: 80px;
+  display: block;
+}

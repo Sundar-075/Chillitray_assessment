@@ -89,4 +89,5 @@ def show(request, format=None):
         # print(data)
         # return render(request, "hier.html", {'data': data, 'pres': True})
         res = "".join(data)
+        # print(res)
         return HttpResponse("<p> "+res+"</p>")

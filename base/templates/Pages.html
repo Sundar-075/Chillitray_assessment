@@ -67,15 +67,23 @@
           </div>
           {% endfor %}
         </div>
-      </div>
-      <div class="page-links">
-        {% if page_no != 1 %}
-        <a href="{% url 'pages' %}?page={{page_no|add:'-1' }}">Previous Page</a>
-        {% endif %}
-        <p>Page:{{page_no}}</p>
-        {% if page_no != total %}
-        <a href="{% url 'pages' %}?page={{page_no|add:'1' }}">Next Page</a>
-        {% endif %}
+        <div class="page-links">
+          {% if page_no != 1 %}
+          <span class="link-tag">
+            <a href="{% url 'pages' %}?page={{page_no|add:'-1' }}"
+              >Previous Page</a
+            >
+          </span>
+          {% endif %}
+          <span class="link-tag">
+            <p>Page:{{page_no}}</p>
+          </span>
+          {% if page_no != total %}
+          <span class="link-tag">
+            <a href="{% url 'pages' %}?page={{page_no|add:'1' }}">Next Page</a>
+          </span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </body>

@@ -15,8 +15,11 @@
         <form class="login-form" action="{% url 'signin' %}" method="POST">
           {% csrf_token %}
           <input type="text" placeholder="username" name="username" />
+          <strong style="color: red">{{ Username_fail }}</strong>
           <input type="password" placeholder="password" name="password" />
+          <strong style="color: red">{{ Fail }}</strong>
           <button type="submit">login</button>
+          <strong style="color: red">{{ Missing_data }}</strong>
           <p class="message">
             Not registered? <a href="{% url 'sign-up' %}">Create an account</a>
           </p>

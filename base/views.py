@@ -21,25 +21,26 @@ class UserSignup(APIView):
         username = self.request.GET.get('username')
         password = self.request.GET.get('password')
 
-        serializer = self.serializer_class(data={
-            'username': username, 'password': password})
-        if serializer.is_valid():
+        if username != "" and username != None and password != "" and password != None:
+            serializer = self.serializer_class(data={
+                'username': username, 'password': password})
+            if serializer.is_valid():
 
-            username = serializer.data.get('username')
-            password = serializer.data.get('password')
-            result = hashlib.sha256(password.encode())
-            password = result.hexdigest()
+                username = serializer.data.get('username')
+                password = serializer.data.get('password')
+                result = hashlib.sha256(password.encode())
+                password = result.hexdigest()
 
-            user = User(username=username, password=password)
-            user.save()
+                user = User(username=username, password=password)
+                user.save()
 
-            return Response({'Ok': 'user successfully created'}, status=status.HTTP_200_OK)
+                return Response({'Ok': 'user successfully created'}, status=status.HTTP_200_OK)
 
-        if 'username' in serializer.errors:
-            return Response({"invalid_username": 'Please follow the conventions', }, status=status.HTTP_406_NOT_ACCEPTABLE)
+            if 'username' in serializer.errors:
+                return Response({"invalid_username": 'Please follow the naming conventions', }, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-        if 'password' in serializer.errors:
-            print(serializer.errors['password'])
+            if 'password' in serializer.errors:
+                return Response({'invalid_password': 'Please change the password'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         return Response({'Bad request': 'Please fill the details'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -126,35 +127,43 @@ def signup_code(request, format=None):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        if username != None and password != None:
+        if username != None and password != None and username != "" and password != "":
             data = requests.get("http://127.0.0.1:8000/signup/", params={
-                'username': username, 'password': password}, headers={'Accept': '*/*'})
+                'username': username, 'password': password}, headers={'Accept': '*/*'}).json()
 
             # print(data.json())
+
+            if 'invalid_username' or 'invalid_password' in data:
+                return render(request, "Signup.html", context=data)
 
             response = redirect('login')
 
             return response
+
+        return render(request, "Signup.html", context={"Missing_data": "Provide username and password"})
 
 
 def Signin(request, format=None):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if username != None and password != None:
-            user = User.objects.get(username=username)
-
+        if username != None and username != "" and password != None and password != "":
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                user = None
             if user is not None:
                 if user.password == hashlib.sha256(password.encode()).hexdigest():
                     # print(user.uid)
-                    request.session['userid'] = user.uid
+                    request.session['user_id'] = user.uid
+                    # print(request.session['userId'])
                     response = redirect("/")
                     return response
                 return render(request, "Login.html", context={"Fail": "Password is Wrong"})
 
             return render(request, "Login.html", context={"Username_fail": "There is no user with that username"})
 
-        return render(request, "Login.html", context={"Missing data": "Provide username and password"})
+        return render(request, "Login.html", context={"Missing_data": "Provide username and password"})
 
 
 def Taskaddfun(request, format=None):
@@ -192,6 +201,8 @@ def GetPages(request, format=None):
 
 
 def logout(request, format=None):
-    if request.session.exists(request.session.session_key):
-        request.session.pop('userid', None)
+    try:
+        del request.session['user_id']
+    except KeyError:
+        pass
     return redirect('login')

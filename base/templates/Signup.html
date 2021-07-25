@@ -18,7 +18,9 @@
         <form class="register-form" action="{% url 'signCode' %}" method="POST">
           {% csrf_token %}
           <input type="text" placeholder="username" name="username" />
+          <strong style="color: red">{{ invalid_username }}</strong>
           <input type="password" placeholder="password" name="password" />
+          <strong style="color: red">{{ invalid_password }}</strong>
           <!-- <input type="text" placeholder="email address" /> -->
           <button>create</button>
           <p class="message">

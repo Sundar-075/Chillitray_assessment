@@ -189,7 +189,7 @@ def GetPages(request, format=None):
 
     if request.method == "GET":
         page_no = request.GET.get('page')
-        uid = request.session.get('userid')
+        uid = request.session.get('user_id')
 
         page = requests.get("http://127.0.0.1:8000/get-task",
                             params={'page': page_no, 'uid': uid}).json()
